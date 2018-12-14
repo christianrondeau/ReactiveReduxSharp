@@ -1,23 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="nunit" Version="3.10.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
     <PackageReference Include="System.Reactive" Version="4.1.2" />
     <PackageReference Include="System.Reactive.Linq" Version="4.1.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ReduxExperiment.Store\ReduxExperiment.Store.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\Users\sherl\.nuget\packages\newtonsoft.json\9.0.1\lib\netstandard1.0\Newtonsoft.Json.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\ReactiveReduxSharp\ReactiveReduxSharp.csproj" />
   </ItemGroup>
 
 </Project>

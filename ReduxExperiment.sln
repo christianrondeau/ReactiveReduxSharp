@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReduxExperiment", "ReduxExperiment\ReduxExperiment.csproj", "{2F819325-A94F-41FF-89AD-BEFB37F58F92}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveReduxSharp.SampleApp", "ReactiveReduxSharp.SampleApp\ReactiveReduxSharp.SampleApp.csproj", "{2F819325-A94F-41FF-89AD-BEFB37F58F92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReduxExperiment.Tests", "ReduxExperiment.Tests\ReduxExperiment.Tests.csproj", "{ABE2671C-CE07-47E1-B352-1C2A636B7E88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveReduxSharp.Tests", "ReactiveReduxSharp.Tests\ReactiveReduxSharp.Tests.csproj", "{ABE2671C-CE07-47E1-B352-1C2A636B7E88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReduxExperiment.Store", "ReduxExperiment.Store\ReduxExperiment.Store.csproj", "{FD5CB135-CA67-43C2-97A0-676734DC24A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveReduxSharp", "ReactiveReduxSharp\ReactiveReduxSharp.csproj", "{FD5CB135-CA67-43C2-97A0-676734DC24A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
