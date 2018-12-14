@@ -3,7 +3,7 @@ using System.Reactive.Subjects;
 
 namespace ReactiveReduxSharp
 {
-	public class ReduxStore<TState> : IDisposable
+	public class ReduxStore<TState> : IDisposable where TState: class
 	{
 		private readonly Func<TState, IAction, TState> _reducer;
 		private readonly BehaviorSubject<TState> _subject;
