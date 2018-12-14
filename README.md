@@ -6,5 +6,4 @@ This project is *not* suited for production, as it was only built as a showcase.
 
 ## License
 
-MIT
-
+[MIT](./LICENSE.md)
