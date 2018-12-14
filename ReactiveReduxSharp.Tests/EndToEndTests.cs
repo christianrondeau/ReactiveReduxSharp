@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 using NUnit.Framework;
-using ReduxExperiment.Store;
 
-namespace ReduxExperiment.Tests
+namespace ReactiveReduxSharp.Tests
 {
 	public class EndToEndTests
 	{
@@ -14,7 +14,6 @@ namespace ReduxExperiment.Tests
 
 		public class UpdateValueAction : IAction
 		{
-			public string Type { get; } = "UPDATE_ACTION";
 			public string Payload;
 
 			public UpdateValueAction(string payload)
@@ -37,12 +36,13 @@ namespace ReduxExperiment.Tests
 		[Test]
 		public void Test1()
 		{
-			var updates = new List<State>();
-			using (_store.Observable.Subscribe(state => updates.Add(state)))
+			var history = new List<string>();
+			var observable = _store.Observable.Select(state => state.Value);
+			using (observable.Subscribe(value => history.Add(value)))
 			{
-				Assert.That(updates.Count, Is.EqualTo(1), "Should receive the initial state on subscribe");
-				_store.Dispatch(new UpdateValueAction("ADD_TODO"));
-				Assert.That(updates.Count, Is.EqualTo(2), "Should update the state");
+				Assert.That(history, Is.EqualTo(new[] {"initial"}));
+				_store.Dispatch(new UpdateValueAction("do the dishes"));
+				Assert.That(history, Is.EqualTo(new[] {"initial", "do the dishes"}));
 			}
 		}
 	}
