@@ -55,12 +55,12 @@ namespace ReactiveReduxSharp.Tests
 			}
 		}
 
-		private ReduxStore<State> _store;
+		private ReduxApp<State> _app;
 
 		[SetUp]
 		public void Setup()
 		{
-			_store = new ReduxStore<State>(
+			_app = new ReduxApp<State>(
 				new State { Value = "initial" },
 				Reducer
 			);
@@ -70,12 +70,12 @@ namespace ReactiveReduxSharp.Tests
 		public void DispatchingActionsUpdatesTheStore()
 		{
 			var history = new List<string>();
-			var observable = _store.Observable
+			var observable = _app.Store
 				.Select(state => state.Value);
 			using (observable.Subscribe(value => history.Add(value)))
 			{
 				Assert.That(history, Is.EqualTo(new[] { "initial" }));
-				_store.Dispatch(new UpdateValueAction("do the dishes"));
+				_app.Dispatch(new UpdateValueAction("do the dishes"));
 				Assert.That(history, Is.EqualTo(new[] { "initial", "do the dishes" }));
 			}
 		}
@@ -84,13 +84,13 @@ namespace ReactiveReduxSharp.Tests
 		public void CanGetStoreSliceUsingMemoizedSelector()
 		{
 			var lastNumber = int.MinValue;
-			var observable = _store.Observable
+			var observable = _app.Store
 				.Select(new Selector<State, int[]>(state => state.Numbers).Projector)
 				.Select(new Selector<int[], int>(numbers => numbers?.LastOrDefault() ?? 0).Projector);
 			using (observable.Subscribe(value => lastNumber = value))
 			{
 				Assert.That(lastNumber, Is.EqualTo(0));
-				_store.Dispatch(new AddNumberAction(42));
+				_app.Dispatch(new AddNumberAction(42));
 				Assert.That(lastNumber, Is.EqualTo(42));
 			}
 		}

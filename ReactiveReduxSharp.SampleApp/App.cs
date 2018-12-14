@@ -13,14 +13,14 @@ namespace ReactiveReduxSharp.SampleApp
 			return new App(new State(), Reducers.Reducer);
 		}
 
-		private readonly ReduxStore<State> _store;
+		private readonly ReduxApp<State> _app;
 		private readonly List<IDisposable> _subscriptions;
 
 		public App(State state, Func<State, IAction, State> reducer)
 		{
 			_subscriptions = new List<IDisposable>();
-			_store = new ReduxStore<State>(state, reducer);
-			var todos = _store.Observable.Select(new Selector<State, string[]>(s => s.Todos).Projector);
+			_app = new ReduxApp<State>(state, reducer);
+			var todos = _app.Store.Select(new Selector<State, string[]>(s => s.Todos).Projector);
 			_subscriptions.Add(
 				todos
 					.Select(new Selector<string[], int>(l => l.Length).Projector)
@@ -49,7 +49,7 @@ namespace ReactiveReduxSharp.SampleApp
 					case "q":
 						return;
 					default:
-						_store.Dispatch(new AddTodo(command));
+						_app.Dispatch(new AddTodo(command));
 						break;
 
 				}
@@ -73,7 +73,7 @@ namespace ReactiveReduxSharp.SampleApp
 		public void Dispose()
 		{
 			_subscriptions.ForEach(s => s.Dispose());
-			_store.Dispose();
+			_app.Dispose();
 		}
 	}
 }
