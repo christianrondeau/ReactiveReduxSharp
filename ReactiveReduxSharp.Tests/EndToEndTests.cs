@@ -118,8 +118,8 @@ namespace ReactiveReduxSharp.Tests
 		{
 			var lastNumber = int.MinValue;
 			var observable = _app.Store
-				.Select(new Selector<State, int[]>(state => state.Numbers).Projector)
-				.Select(new Selector<int[], int>(numbers => numbers?.LastOrDefault() ?? 0).Projector);
+				.Selector(state => state.Numbers)
+				.Selector(numbers => numbers?.LastOrDefault() ?? 0);
 			using (observable.Subscribe(value => lastNumber = value))
 			{
 				Assert.That(lastNumber, Is.EqualTo(0));
@@ -133,7 +133,7 @@ namespace ReactiveReduxSharp.Tests
 		{
 			var lastValue = "";
 			var observable = _app.Store
-				.Select(new Selector<State, string>(state => state.Value).Projector);
+				.Select(state => state.Value);
 			using (observable.Subscribe(value => lastValue = value))
 			{
 				_app.Dispatch(new AddNumberAction(42));

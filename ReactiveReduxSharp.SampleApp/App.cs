@@ -20,16 +20,16 @@ namespace ReactiveReduxSharp.SampleApp
 		{
 			_subscriptions = new List<IDisposable>();
 			_app = new ReduxApp<State>(state, reducer);
-			var todos = _app.Store.Select(new Selector<State, string[]>(s => s.Todos).Projector);
+			var todos = _app.Store.Selector(s => s.Todos);
 			_subscriptions.Add(
 				todos
-					.Select(new Selector<string[], int>(l => l.Length).Projector)
+					.Selector(l => l.Length)
 					.Where(c => c > 0)
 					.Subscribe(OutputTodosCount)
 				);
 			_subscriptions.Add(
 				todos
-					.Select(new Selector<string[], string[]>(l => l.TakeLast(3).ToArray()).Projector)
+					.Selector(l => l.TakeLast(3).ToArray())
 					.Where(l => l.Length > 0)
 					.Subscribe(OutputTodosList)
 				);
