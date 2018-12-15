@@ -4,8 +4,6 @@ namespace ReactiveReduxSharp
 {
 	public class EffectAttribute : Attribute
 	{
-		public EffectAttribute()
-		{
-		}
+		public bool Dispatch { get; set; }
 	}
 }

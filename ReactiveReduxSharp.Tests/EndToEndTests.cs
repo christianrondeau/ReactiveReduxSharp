@@ -76,8 +76,7 @@ namespace ReactiveReduxSharp.Tests
 			private readonly IObservable<IAction> _actions;
 
 			[Effect] public IObservable<IAction> SideEffect() => _actions
-				.Select(action => action as AddNumberAction)
-				.Where(action => action != null)
+				.SelectAction<AddNumberAction>()
 				.Select(action => action.Payload)
 				.Select(n => new AddNumberSideEffectAction(n));
 

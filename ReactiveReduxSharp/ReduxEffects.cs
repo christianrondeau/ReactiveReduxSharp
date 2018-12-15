@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace ReactiveReduxSharp
@@ -23,14 +22,21 @@ namespace ReactiveReduxSharp
 		public object BindEffectClass(Type effectType)
 		{
 			var effect = Activator.CreateInstance(effectType, _actions);
-			var properties = effectType
-				.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-				.Where(p => p.GetCustomAttribute<EffectAttribute>() != null);
+			var properties = effectType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
 
 			foreach (var prop in properties)
-				_effectSubscriptions.Add(((IObservable<IAction>) prop.Invoke(effect, null)).Subscribe(_dispatch));
+			{
+				var effectAttribute = prop.GetCustomAttribute<EffectAttribute>();
+				if (effectAttribute == null) continue;
+
+				var effectObservable = ((IObservable<IAction>) prop.Invoke(effect, null));
+				_effectSubscriptions.Add(effectObservable.Subscribe(effectAttribute.Dispatch ? _dispatch : NoDispatch));}
 
 			return effect;
+		}
+
+		private static void NoDispatch(IAction obj)
+		{
 		}
 
 		public void Dispose()

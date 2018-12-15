@@ -10,16 +10,16 @@ namespace ReactiveReduxSharp.SampleApp
 	{
 		public static App Create()
 		{
-			return new App(new State(), Reducers.Reducer);
+			return new App(new State(), Reducers.Reducer, new[] { typeof(TodoEffects) });
 		}
 
 		private readonly ReduxApp<State> _app;
 		private readonly List<IDisposable> _subscriptions;
 
-		public App(State state, Func<State, IAction, State> reducer)
+		public App(State state, Func<State, IAction, State> reducer, Type[] effects)
 		{
 			_subscriptions = new List<IDisposable>();
-			_app = new ReduxApp<State>(state, reducer);
+			_app = new ReduxApp<State>(state, reducer, effects);
 			var todos = _app.Store.Selector(s => s.Todos);
 			_subscriptions.Add(
 				todos
