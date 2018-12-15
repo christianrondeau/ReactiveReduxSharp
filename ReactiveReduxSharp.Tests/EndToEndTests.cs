@@ -8,15 +8,15 @@ namespace ReactiveReduxSharp.Tests
 {
 	public class EndToEndTests
 	{
-		public class State
+		private class State
 		{
 			public string Value { get; set; }
 			public int[] Numbers { get; set; } = new int[0];
 		}
 
-		public class UpdateValueAction : IAction
+		private class UpdateValueAction : IAction
 		{
-			public string Payload;
+			public readonly string Payload;
 
 			public UpdateValueAction(string payload)
 			{
@@ -24,11 +24,21 @@ namespace ReactiveReduxSharp.Tests
 			}
 		}
 
-		public class AddNumberAction : IAction
+		private class AddNumberAction : IAction
 		{
-			public int Payload;
+			public readonly int Payload;
 
 			public AddNumberAction(int payload)
+			{
+				Payload = payload;
+			}
+		}
+
+		private class AddNumberSideEffectAction : IAction
+		{
+			public readonly int Payload;
+
+			public AddNumberSideEffectAction(int payload)
 			{
 				Payload = payload;
 			}
@@ -50,8 +60,30 @@ namespace ReactiveReduxSharp.Tests
 						Value = state.Value,
 						Numbers = state.Numbers.Concat(new[] { addNumber.Payload }).ToArray()
 					};
+				case AddNumberSideEffectAction addNumberSideEffect:
+					return new State
+					{
+						Value = $"Side effect: {addNumberSideEffect.Payload}",
+						Numbers = state.Numbers
+					};
 				default:
 					return state;
+			}
+		}
+
+		private class Effects
+		{
+			private readonly IObservable<IAction> _actions;
+
+			[Effect] public IObservable<IAction> SideEffect() => _actions
+				.Select(action => action as AddNumberAction)
+				.Where(action => action != null)
+				.Select(action => action.Payload)
+				.Select(n => new AddNumberSideEffectAction(n));
+
+			public Effects(IObservable<IAction> actions)
+			{
+				_actions = actions;
 			}
 		}
 
@@ -62,7 +94,8 @@ namespace ReactiveReduxSharp.Tests
 		{
 			_app = new ReduxApp<State>(
 				new State { Value = "initial" },
-				Reducer
+				Reducer,
+				new[] { typeof(Effects) }
 			);
 		}
 
@@ -92,6 +125,19 @@ namespace ReactiveReduxSharp.Tests
 				Assert.That(lastNumber, Is.EqualTo(0));
 				_app.Dispatch(new AddNumberAction(42));
 				Assert.That(lastNumber, Is.EqualTo(42));
+			}
+		}
+
+		[Test]
+		public void EffectsAreInvokedAfterStoreUpdates()
+		{
+			var lastValue = "";
+			var observable = _app.Store
+				.Select(new Selector<State, string>(state => state.Value).Projector);
+			using (observable.Subscribe(value => lastValue = value))
+			{
+				_app.Dispatch(new AddNumberAction(42));
+				Assert.That(lastValue, Is.EqualTo("Side effect: 42"));
 			}
 		}
 	}

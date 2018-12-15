@@ -8,17 +8,18 @@ namespace ReactiveReduxSharp
 		private readonly Func<TState, IAction, TState> _reducer;
 		private readonly BehaviorSubject<TState> _store;
 		private readonly Subject<IAction> _actions;
+		private readonly ReduxEffects _effects;
 		private TState _state;
 
 		public IObservable<TState> Store => _store;
-		public IObservable<IAction> Actions => _actions;
 
-		public ReduxApp(TState state, Func<TState, IAction, TState> reducer)
+		public ReduxApp(TState state, Func<TState, IAction, TState> reducer, Type[] effects = null)
 		{
 			_state = state;
 			_store = new BehaviorSubject<TState>(state);
 			_actions = new Subject<IAction>();
 			_reducer = reducer ?? throw new ArgumentNullException(nameof(reducer));
+			_effects = new ReduxEffects(_actions, effects, Dispatch);
 		}
 
 		public void Dispatch(IAction action)
@@ -30,6 +31,7 @@ namespace ReactiveReduxSharp
 
 		public void Dispose()
 		{
+			_effects.Dispose();
 			_store.Dispose();
 		}
 	}
